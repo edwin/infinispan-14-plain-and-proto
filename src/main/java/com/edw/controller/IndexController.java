@@ -20,14 +20,12 @@ public class IndexController {
     private GenerateCacheHelper generateCacheHelper;
 
     @GetMapping(path = "/plain")
-    public String initPlain() {
-        generateCacheHelper.generatePlainText();
-        return "good";
+    public Long initPlain() {
+        return generateCacheHelper.generatePlainText();
     }
 
     @GetMapping(path = "/proto")
-    public String initProto() {
-        generateCacheHelper.generateProto();
-        return "good";
+    public Long initProto() {
+        return generateCacheHelper.generateProto();
     }
 }

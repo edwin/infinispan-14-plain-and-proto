@@ -50,15 +50,15 @@ public class GenerateCacheHelper {
         }
     }
 
-    public void generatePlainText() {
-        process(cacheManager.getCache("balance_plain"));
+    public Long generatePlainText() {
+        return process(cacheManager.getCache("balance_plain"));
     }
 
-    public void generateProto() {
-        process(cacheManager.getCache("balance_proto"));
+    public Long generateProto() {
+        return process(cacheManager.getCache("balance_proto"));
     }
 
-    private void process (RemoteCache cache) {
+    private Long process (RemoteCache cache) {
 
         Long startingTime = System.currentTimeMillis();
         logger.info("starting {} ====================", cache.getName());
@@ -110,8 +110,12 @@ public class GenerateCacheHelper {
             ex.printStackTrace();
         }
 
+        Long differences = System.currentTimeMillis() - startingTime;
+
         logger.info("done ==================== {} for {} ms",
                 cache.getName(),
-                System.currentTimeMillis() - startingTime);
+                differences);
+
+        return differences;
     }
 }
