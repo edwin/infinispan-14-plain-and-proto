@@ -1,6 +1,12 @@
 # Comparing Result of different Infinispan cache encodings
 
-## How To
+## Concept
+Running a remote hotrod client to a clustered Infinispan, doing 100.000 `replaceWithVersion` on each cycle. 
+
+## How To Run
+```
+$ java -Xmx4G -Xms4G -XX:+UseG1GC -jar target/infinispan-14-plain-and-proto-1.0-SNAPSHOT.jar
+```
 
 ## Cache Configuration
 Cache with `Plain` encoding
@@ -28,5 +34,53 @@ Cache with `Proto` encoding
 ```
 
 ## text/plain Encoding 
+```
+$ for i in (seq 1 10);curl -s -k http://localhost:8080/plain ;end
+```
+
+Result
+
+ Cycle  | ms  
+--- | ---
+  1 | 80478  (lets ignore this since Infinispan is still warming up)
+  2 | 60670  
+  3 | 70428  
+  4 | 64678  
+  5 | 65255  
+  6 | 64661
+  7 | 64105  
+  8 | 65625  
+  9 | 66735  
+  10 | 66124
+  Total | 588281
+
 
 ## application/x-protostream Encoding 
+```
+$ for i in (seq 1 10);curl -s -k http://localhost:8080/proto ;end
+```
+
+Result
+
+ Cycle  | ms  
+--- | ---
+  1 | 58735 (lets ignore this since Infinispan is still warming up)
+  2 | 56852  
+  3 | 56572  
+  4 | 57957  
+  5 | 60376  
+  6 | 64303
+  7 | 58387  
+  8 | 57873  
+  9 | 57904 
+  10 | 59561
+  Total | 529785
+
+## Conclusion
+
+method | total time
+--- | ----
+text/plain Encoding | 588.281
+application/x-protostream Encoding | 529.785
+
+Time differences between two `encodings` is `58496 ms` in 9 cycles. Cache with `protostream` encoding is around 10 percent faster for this use case.
